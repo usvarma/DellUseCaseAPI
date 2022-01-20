@@ -11,8 +11,8 @@ namespace TweetService.TweetDBContext
         readonly IMongoDatabase mongoDatabase;
         public TweetDbContext(IConfiguration configuration)
         {
-            mongoClient = new MongoClient(configuration.GetSection("TweetDatabaseSettings:ConnectionString").Value);
-            mongoDatabase = mongoClient.GetDatabase(configuration.GetSection("TweetDatabaseSettings:DatabaseName").Value);
+            mongoClient = new MongoClient(configuration.GetSection("TweetsDatabase:ConnectionString").Value);
+            mongoDatabase = mongoClient.GetDatabase(configuration.GetSection("TweetsDatabase:DatabaseName").Value);
         }
         
         //create tweet collections

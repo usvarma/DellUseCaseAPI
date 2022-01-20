@@ -10,15 +10,15 @@ namespace TweetService.Repository
 {
     public class TweetRepository : ITweetRepository
     {
-        private readonly TweetDbContext _tweetDbcontext;
+        private readonly TweetDbContext _tweetDbContext;
         public TweetRepository(TweetDbContext tweetDbContext)
         {
-            _tweetDbcontext = tweetDbContext;
+            _tweetDbContext = tweetDbContext;
         }
-        public bool AddTweet(Tweet tweet, string userName)
+        public async Task<Tweet> AddTweet(Tweet tweet, string userName)
         {
-            var tweetList = _tweetDbcontext.Tweets.AsQueryable();
-            if (tweetList.Count() > 0)
+            var tweetList = _tweetDbContext.Tweets.AsQueryable();
+            if (tweetList.Any())
             {
                 tweet.TweetId = tweetList.Max(t => t.TweetId) + 1;
             }
@@ -27,15 +27,15 @@ namespace TweetService.Repository
                 tweet.TweetId = 1;
             }
             tweet.PostedOn = DateTime.Now;
-            _tweetDbcontext.Tweets.InsertOne(tweet);
-            return true;
+            await _tweetDbContext.Tweets.InsertOneAsync(tweet);
+            return tweet;
         }
         public bool DeleteTweet(string tweetId)
         {
-            Int32.TryParse(tweetId, out var intTweetId);
+            _ = int.TryParse(tweetId, out var intTweetId);
             if(intTweetId != 0)
             {
-                var deletedTweet = _tweetDbcontext.Tweets.FindOneAndDelete(tweet => tweet.TweetId == intTweetId);
+                var deletedTweet = _tweetDbContext.Tweets.FindOneAndDelete(tweet => tweet.TweetId == intTweetId);
                 return deletedTweet != null;
             }
             else
@@ -45,26 +45,26 @@ namespace TweetService.Repository
         }
         public IEnumerable<Tweet> GetAllTweets()
         {
-            return _tweetDbcontext.Tweets.Find(tweet => tweet.TweetId != null && tweet.Username != null).ToList();
+            return _tweetDbContext.Tweets.Find(tweet => tweet.TweetId != null && tweet.Username != null).ToList();
         }
         public IEnumerable<Tweet> GetAllTweetsOfUser(string userName)
         {
-            return this._tweetDbcontext.Tweets.Find(tweet => tweet.TweetId != null && tweet.Username == userName).ToList();
+            return _tweetDbContext.Tweets.Find(tweet => tweet.TweetId != null && tweet.Username == userName).ToList();
         }
-        public bool LikeTweet(string tweetId)
+        public bool LikeTweet(string tweetId, string username)
         {
-            Int32.TryParse(tweetId, out var intTweetId);
+            _ = int.TryParse(tweetId, out var intTweetId);
             if (intTweetId != 0)
             {
-                var tweetToUpdate = _tweetDbcontext.Tweets.Find(tweet => tweet.TweetId == intTweetId).ToList();
+                var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == intTweetId).ToList();
                 if (tweetToUpdate == null || tweetToUpdate.Count() <= 0)
                 {
                     return false;
                 }
                 else
                 {
-                    tweetToUpdate[0].LikeCount += 1;
-                    var updatedTweet = _tweetDbcontext.Tweets.ReplaceOne(tweet => tweet.TweetId == intTweetId, tweetToUpdate[0]);
+                    tweetToUpdate[0].LikedByUsers.Append(username);
+                    var updatedTweet = _tweetDbContext.Tweets.ReplaceOne(tweet => tweet.TweetId == intTweetId, tweetToUpdate[0]);
                     return updatedTweet != null;
                 }
 
@@ -76,17 +76,40 @@ namespace TweetService.Repository
         }
         public bool UpdateTweet(string tweetId, string userName, Tweet valueToUpdate)
         {
-            Int32.TryParse(tweetId, out var intTweetId);
+            _ = int.TryParse(tweetId, out var intTweetId);
             if (intTweetId != 0)
             {
-                var tweetToUpdate = _tweetDbcontext.Tweets.Find(tweet => tweet.TweetId == intTweetId).ToList();
-                if (tweetToUpdate == null || tweetToUpdate.Count() <= 0)
+                var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == intTweetId).ToList();
+                if (tweetToUpdate == null || tweetToUpdate.Count <= 0)
                 {
                     return false;
                 }
                 else
                 {
-                    var updatedTweet = _tweetDbcontext.Tweets.ReplaceOne(tweet => tweet.TweetId == intTweetId, valueToUpdate);
+                    var updatedTweet = _tweetDbContext.Tweets.ReplaceOne(tweet => tweet.TweetId == intTweetId, valueToUpdate);
+                    return updatedTweet != null;
+                }
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool ReplyTweet(string tweetId, string username)
+        {
+            _ = int.TryParse(tweetId, out var intTweetId);
+            if (intTweetId != 0)
+            {
+                var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == intTweetId).ToList();
+                if (tweetToUpdate == null || tweetToUpdate.Count <= 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    tweetToUpdate[0].RepliedByUsers.Append(username);
+                    var updatedTweet = _tweetDbContext.Tweets.ReplaceOne(tweet => tweet.TweetId == intTweetId, tweetToUpdate[0]);
                     return updatedTweet != null;
                 }
 
@@ -97,7 +120,6 @@ namespace TweetService.Repository
             }
         }
 
-        
 
     }
 }

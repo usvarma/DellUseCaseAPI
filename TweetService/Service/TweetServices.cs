@@ -14,9 +14,9 @@ namespace TweetService.Service
         {
             _tweetRepository = tweetRepository;
         }
-        public bool AddTweet(Tweet tweet, string userName)
+        public async Task<Tweet> AddTweet(Tweet tweet, string userName)
         {
-            var addResult = _tweetRepository.AddTweet(tweet, userName);
+            var addResult = await _tweetRepository.AddTweet(tweet, userName);
             return addResult;
         }
 
@@ -34,9 +34,9 @@ namespace TweetService.Service
         {
             return _tweetRepository.GetAllTweetsOfUser(userName);
         }
-        public bool LikeTweet(string tweetId)
+        public bool LikeTweet(string tweetId, string userName)
         {
-            var likeResult = _tweetRepository.LikeTweet(tweetId);
+            var likeResult = _tweetRepository.LikeTweet(tweetId, userName);
             return likeResult;
         }
         public bool UpdateTweet(string tweetId, string userName, Tweet updatedTweet)

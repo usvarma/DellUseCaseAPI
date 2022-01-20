@@ -10,8 +10,8 @@ namespace UserService.UserDBContext
         readonly IMongoDatabase mongoDatabase;
         public UserDbContext(IConfiguration configuration)
         {
-            mongoClient = new MongoClient(configuration.GetSection("TweetDatabaseSettings:ConnectionString").Value);
-            mongoDatabase = mongoClient.GetDatabase(configuration.GetSection("TweetDatabaseSettings:DatabaseName").Value);
+            mongoClient = new MongoClient(configuration.GetSection("TweetsDatabase:ConnectionString").Value);
+            mongoDatabase = mongoClient.GetDatabase(configuration.GetSection("TweetsDatabase:DatabaseName").Value);
         }
 
         public IMongoCollection<User> Users => mongoDatabase.GetCollection<User>("Users");

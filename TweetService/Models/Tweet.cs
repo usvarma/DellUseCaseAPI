@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace TweetService.Models
 {
@@ -11,13 +11,13 @@ namespace TweetService.Models
         [BsonId]
         [BsonRepresentation(BsonType.String)]
         public int? TweetId { get; set; }
+        [MaxLength(144)]
         public string Message { get; set; }
         [Required]
         [EmailAddress]
         public string Username { get; set; }
-        public int LikeCount { get; set; }
-        public int ReplyCount { get; set; }
-        public int DislikeCount { get; set; }
+        public IEnumerable<String> LikedByUsers { get; set; }
+        public IEnumerable<String> RepliedByUsers { get; set; }
         public DateTime PostedOn { get; set; }
     }
 }
