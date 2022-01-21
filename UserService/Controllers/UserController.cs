@@ -107,10 +107,28 @@ namespace UserService.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("/api/v1.0/tweets/login")]
-        public async Task<IActionResult> LoginUser([FromBody] UserCredential userdata)
+        public async Task<IActionResult> LoginUserAsync([FromBody] UserCredential userdata)
         {
-            
-            return Ok();
+            try
+            {
+                var user = await _userService.LoginUserAsync(userdata.Username, userdata.Password);
+                if(user == null)
+                {
+                    return Unauthorized($"User {userdata.Username} is not a valid user");
+                }
+
+                return Ok();
+            }
+            catch (ArgumentException argEx)
+            {
+                _logger.LogError($"Could not login user {userdata.Username} due to exception. Exception is {argEx}");
+                return StatusCode(400, $"{argEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Internal server error occured while loggin in user {userdata.Username}. Exception is {ex}");
+                return StatusCode(500, $"{ex.Message}");
+            }
         }
 
         /// <summary>

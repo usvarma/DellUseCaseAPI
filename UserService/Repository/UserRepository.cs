@@ -38,7 +38,7 @@ namespace UserService.Repository
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                throw new ArgumentNullException($"Invalid username or password. Username: {username}, Password: {password}");
+                throw new ArgumentException($"Invalid username or password. Username: {username}, Password: {password}");
             }
             
             var user = await SearchUserAsync(username);
