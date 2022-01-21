@@ -14,35 +14,36 @@ namespace TweetService.Service
         {
             _tweetRepository = tweetRepository;
         }
-        public async Task<Tweet> AddTweet(Tweet tweet, string userName)
+        
+        public async Task<Tweet> AddTweetAsync(Tweet tweet, string userName)
         {
-            var addResult = await _tweetRepository.AddTweet(tweet, userName);
+            var addResult = await _tweetRepository.AddTweetAsync(tweet, userName);
             return addResult;
         }
-
-        public bool DeleteTweet(string tweetId)
+        public async Task DeleteTweetAsync(int? tweetId)
         {
-            var deleteResult = _tweetRepository.DeleteTweet(tweetId);
-            return deleteResult;
+            await _tweetRepository.DeleteTweetAsync(tweetId);
         }
-        public IEnumerable<Tweet> GetAllTweets()
+        public async Task<IEnumerable<Tweet>> GetAllTweetsAsync()
         {
-            return _tweetRepository.GetAllTweets();
+            return await _tweetRepository.GetAllTweetsAsync();
         }
-
-        public IEnumerable<Tweet> GetAllTweetsOfUser(string userName)
+        public async Task<IEnumerable<Tweet>> GetAllTweetsOfUserAsync(string userName)
         {
-            return _tweetRepository.GetAllTweetsOfUser(userName);
+            var tweetList = await _tweetRepository.GetAllTweetsOfUserAsync(userName);
+            return tweetList;
         }
-        public bool LikeTweet(string tweetId, string userName)
+        public async Task LikeTweetAsync(int? tweetId, string userName)
         {
-            var likeResult = _tweetRepository.LikeTweet(tweetId, userName);
-            return likeResult;
+            await _tweetRepository.LikeTweetAsync(tweetId, userName);
         }
-        public bool UpdateTweet(string tweetId, string userName, Tweet updatedTweet)
+        public async Task ReplyTweetAsync(int? parentTweetId, string repliedByUsername, Tweet replyTweet)
         {
-            var updateResult = _tweetRepository.UpdateTweet(tweetId, userName, updatedTweet);
-            return updateResult;
+            await _tweetRepository.ReplyTweetAsync(parentTweetId, repliedByUsername, replyTweet);
+        }
+        public async Task UpdateTweetAsync(int? tweetId, string userName, Tweet newTweet)
+        {
+            await _tweetRepository.UpdateTweetAsync(tweetId, userName, newTweet);
         }
    }
 }

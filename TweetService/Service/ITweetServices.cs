@@ -8,11 +8,12 @@ namespace TweetService.Service
 {
     public interface ITweetServices
     {
-        IEnumerable<Tweet> GetAllTweets();
-        IEnumerable<Tweet> GetAllTweetsOfUser(string userName);
-        public Task<Tweet> AddTweet(Tweet tweet, string userName);
-        bool UpdateTweet(string tweetId, string userName, Tweet updatedTweet);
-        bool DeleteTweet(string tweetId);
-        bool LikeTweet(string tweetId, string userName);
+        Task<IEnumerable<Tweet>> GetAllTweetsAsync();
+        Task<IEnumerable<Tweet>> GetAllTweetsOfUserAsync(string userName);
+        Task<Tweet> AddTweetAsync(Tweet tweet, string userName);
+        Task UpdateTweetAsync(int? tweetId, string userName, Tweet newTweet);
+        Task DeleteTweetAsync(int? tweetId);
+        Task LikeTweetAsync(int? tweetId, string userName);
+        Task ReplyTweetAsync(int? parentTweetId, string repliedByUsername, Tweet replyTweet);
     }
 }

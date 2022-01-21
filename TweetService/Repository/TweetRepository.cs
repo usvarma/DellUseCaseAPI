@@ -15,9 +15,22 @@ namespace TweetService.Repository
         {
             _tweetDbContext = tweetDbContext;
         }
-        public async Task<Tweet> AddTweet(Tweet tweet, string userName)
+        public async Task<Tweet> AddTweetAsync(Tweet tweet, string userName)
         {
+            if(tweet == null || string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentException($"Invalid arguments for adding a tweet. Username is: {userName} and tweet is: {tweet}");
+            }
+            
             var tweetList = _tweetDbContext.Tweets.AsQueryable();
+            var userList = _tweetDbContext.Users.AsQueryable();
+            var isValidUsername = _tweetDbContext.Users.Find(user => user.Username == userName).Any();
+
+            if (isValidUsername)
+            {
+                throw new ArgumentException($"Cannot add tweet for an user who doesn't exist with {userName}");
+            }
+            
             if (tweetList.Any())
             {
                 tweet.TweetId = tweetList.Max(t => t.TweetId) + 1;
@@ -26,100 +39,90 @@ namespace TweetService.Repository
             {
                 tweet.TweetId = 1;
             }
+            
             tweet.PostedOn = DateTime.Now;
             await _tweetDbContext.Tweets.InsertOneAsync(tweet);
             return tweet;
         }
-        public bool DeleteTweet(string tweetId)
+        public async Task DeleteTweetAsync(int? tweetId)
         {
-            _ = int.TryParse(tweetId, out var intTweetId);
-            if(intTweetId != 0)
+            if (tweetId == null)
             {
-                var deletedTweet = _tweetDbContext.Tweets.FindOneAndDelete(tweet => tweet.TweetId == intTweetId);
-                return deletedTweet != null;
+                throw new ArgumentException($"Invalid tweet id: {tweetId}");
             }
             else
             {
-                return false;
+                var tweetList = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == tweetId).ToList();
+                if (!tweetList.Any())
+                {
+                    throw new ArgumentException($"Cannot find tweet with id: {tweetId} to delete");
+                }
+                await _tweetDbContext.Tweets.FindOneAndDeleteAsync(tweet => tweet.TweetId == tweetId);
             }
         }
-        public IEnumerable<Tweet> GetAllTweets()
+        public async Task<IEnumerable<Tweet>> GetAllTweetsAsync()
         {
-            return _tweetDbContext.Tweets.Find(tweet => tweet.TweetId != null && tweet.Username != null).ToList();
+            return await _tweetDbContext.Tweets.Find(tweet => tweet.TweetId != null && tweet.Username != null).ToListAsync();
         }
-        public IEnumerable<Tweet> GetAllTweetsOfUser(string userName)
+        public async Task<IEnumerable<Tweet>> GetAllTweetsOfUserAsync(string userName)
         {
-            return _tweetDbContext.Tweets.Find(tweet => tweet.TweetId != null && tweet.Username == userName).ToList();
+            return string.IsNullOrWhiteSpace(userName) ? new List<Tweet>() : await _tweetDbContext.Tweets.Find(tweet => tweet.TweetId != null && tweet.Username == userName).ToListAsync();
         }
-        public bool LikeTweet(string tweetId, string username)
+        public async Task LikeTweetAsync(int? tweetId, string username)
         {
-            _ = int.TryParse(tweetId, out var intTweetId);
-            if (intTweetId != 0)
+            if (tweetId == null || string.IsNullOrWhiteSpace(username))
             {
-                var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == intTweetId).ToList();
-                if (tweetToUpdate == null || tweetToUpdate.Count() <= 0)
-                {
-                    return false;
-                }
-                else
-                {
-                    tweetToUpdate[0].LikedByUsers.Append(username);
-                    var updatedTweet = _tweetDbContext.Tweets.ReplaceOne(tweet => tweet.TweetId == intTweetId, tweetToUpdate[0]);
-                    return updatedTweet != null;
-                }
+                throw new ArgumentException($"Invalid tweet id or username. Tweet id is {tweetId} and username is {username}");
+            }
 
-            }
-            else
+            var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == tweetId).ToList();
+            if (!tweetToUpdate.Any())
             {
-                return false;
+                throw new ArgumentException($"Cannot find tweet with id: {tweetId} to like");
             }
+
+            if (tweetToUpdate.FirstOrDefault().Username == username)
+            {
+                throw new ArgumentException($"User cannot like own tweet");
+            }
+
+            var newLikedByUsers = tweetToUpdate[0].LikedByUsers.Append(username);
+            tweetToUpdate[0].LikedByUsers = newLikedByUsers;
+            await _tweetDbContext.Tweets.ReplaceOneAsync(tweet => tweet.TweetId == tweetId, tweetToUpdate[0]);
         }
-        public bool UpdateTweet(string tweetId, string userName, Tweet valueToUpdate)
+        public async Task UpdateTweetAsync(int? tweetId, string userName, Tweet updatedTweet)
         {
-            _ = int.TryParse(tweetId, out var intTweetId);
-            if (intTweetId != 0)
+            if (tweetId == null || string.IsNullOrWhiteSpace(userName) || updatedTweet == null)
             {
-                var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == intTweetId).ToList();
-                if (tweetToUpdate == null || tweetToUpdate.Count <= 0)
-                {
-                    return false;
-                }
-                else
-                {
-                    var updatedTweet = _tweetDbContext.Tweets.ReplaceOne(tweet => tweet.TweetId == intTweetId, valueToUpdate);
-                    return updatedTweet != null;
-                }
-
+                throw new ArgumentException($"Invalid arguments to update tweet. Tweet id: {tweetId}, username: {userName} and updated tweet value: {updatedTweet}");
             }
-            else
+            
+            var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == tweetId).ToList();
+            if (!tweetToUpdate.Any())
             {
-                return false;
+                throw new ArgumentException($"Cannot find tweet with id: {tweetId} to update");
             }
+            await _tweetDbContext.Tweets.ReplaceOneAsync(tweet => tweet.TweetId == tweetId, updatedTweet);
         }
-        public bool ReplyTweet(string tweetId, string username)
+        public async Task ReplyTweetAsync(int? parentTweetId, string repliedByUsername, Tweet replyTweet)
         {
-            _ = int.TryParse(tweetId, out var intTweetId);
-            if (intTweetId != 0)
+            if (parentTweetId == null || string.IsNullOrWhiteSpace(repliedByUsername) || replyTweet == null)
             {
-                var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == intTweetId).ToList();
-                if (tweetToUpdate == null || tweetToUpdate.Count <= 0)
-                {
-                    return false;
-                }
-                else
-                {
-                    tweetToUpdate[0].RepliedByUsers.Append(username);
-                    var updatedTweet = _tweetDbContext.Tweets.ReplaceOne(tweet => tweet.TweetId == intTweetId, tweetToUpdate[0]);
-                    return updatedTweet != null;
-                }
+                throw new ArgumentException($"Invalid arguments while replying a tweet. Parent tweet id: {parentTweetId}, replying user: {repliedByUsername} and replied tweet {replyTweet}");
+            }
 
-            }
-            else
+            var tweetToReply = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == parentTweetId).ToList();
+            if (!tweetToReply.Any())
             {
-                return false;
+                throw new ArgumentException($"Cannot find tweet id: {parentTweetId} to reply");
             }
+
+            var repliedByUsers = tweetToReply[0].RepliedByUsers.Append(repliedByUsername);
+            var tweetReplies = tweetToReply[0].Replies.Append(replyTweet);
+            tweetToReply[0].Replies = tweetReplies;
+            tweetToReply[0].RepliedByUsers = repliedByUsers;
+
+            await _tweetDbContext.Tweets.ReplaceOneAsync(tweet => tweet.TweetId == parentTweetId, tweetToReply[0]);
         }
-
-
     }
 }

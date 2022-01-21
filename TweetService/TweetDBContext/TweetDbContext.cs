@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using TweetService.Models;
+using UserService.Models;
 
 namespace TweetService.TweetDBContext
 {
@@ -17,6 +18,6 @@ namespace TweetService.TweetDBContext
         
         //create tweet collections
         public IMongoCollection<Tweet> Tweets => mongoDatabase.GetCollection<Tweet>("Tweets");
-        
+        public IMongoCollection<User> Users => mongoDatabase.GetCollection<User>("Users");
     }
 }
