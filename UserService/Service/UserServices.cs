@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UserService.Models;
 using UserService.Repository;
 
@@ -12,31 +13,29 @@ namespace UserService.Service
         {
             _userRepository = userRepository;
         }
-        public IEnumerable<User> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return _userRepository.GetAllUsers();
+            return await _userRepository.GetAllUsersAsync();
         }
 
-        public IEnumerable<User> SearchUser(string userName)
+        public async Task<IEnumerable<User>> SearchUserAsync(string userName)
         {
-            return _userRepository.SearchUser(userName);
+            return await _userRepository.SearchUserAsync(userName);
         }
 
         #region Authentication
-        public bool LoginUser(User user)
+        public async Task<User> LoginUserAsync(string username, string password)
         {
-            var loginResult = _userRepository.LoginUser(user);
-            return loginResult;
+            return await _userRepository.LoginUserAsync(username, password);
         }
 
-        public bool RegisterUser(User user)
+        public async Task<User> RegisterUserAsync(User user)
         {
-            var registerResult = _userRepository.RegisterUser(user);
-            return registerResult;
+            return await _userRepository.RegisterUserAsync(user);
         }
-        public bool ForgotPassword(string userName)
+        public async Task ForgotPasswordAsync(string userName, string updatedPassword)
         {
-            throw new NotImplementedException();
+           await _userRepository.ForgotPasswordAsync(userName, updatedPassword);
         }
         #endregion
     }

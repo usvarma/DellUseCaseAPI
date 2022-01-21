@@ -24,7 +24,7 @@ namespace TweetService.Repository
             
             var tweetList = _tweetDbContext.Tweets.AsQueryable();
             var userList = _tweetDbContext.Users.AsQueryable();
-            var isValidUsername = _tweetDbContext.Users.Find(user => user.Username == userName).Any();
+            var isValidUsername = _tweetDbContext.Users.Find(user => user.EmailAddress == userName).Any();
 
             if (isValidUsername)
             {

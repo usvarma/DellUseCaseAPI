@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UserService.Models;
 
 namespace UserService.Repository
 {
     public interface IUserRepository
     {
-        IEnumerable<User> GetAllUsers();
-        IEnumerable<User> SearchUser(string userName);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<IEnumerable<User>> SearchUserAsync(string userName);
         
         #region Authentication
-        bool RegisterUser(User user);
-        bool LoginUser(User user);
-        bool ForgotPassword(string userName);
+        Task<User> RegisterUserAsync(User user);
+        Task<User> LoginUserAsync(string username, string password);
+        Task ForgotPasswordAsync(string userName, string updatedPassword);
 
         #endregion
     }

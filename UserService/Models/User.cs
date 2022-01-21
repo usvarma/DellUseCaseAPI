@@ -14,11 +14,12 @@ namespace UserService.Models
         public int? UserId { get; set; }
         [EmailAddress]
         [Required]
-        public string Username { get; set; }
+        public string EmailAddress { get; set; }
         [Required]
         public string Handle { get; set; }
         [Required]
         public string Password { get; set; }
+        public HashedPassword PasswordHashed{get;set;}
         public DateTime CreatedOn { get; set; }
         public DateTime LastUpdated { get; set; }
     }
