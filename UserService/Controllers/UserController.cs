@@ -12,11 +12,13 @@ namespace UserService.Controllers
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
+        private readonly ITokenService _tokenService;
         private readonly IUserServices _userService;
-        public UserController(IUserServices userService, ILogger<UserController> logger)
+        public UserController(IUserServices userService, ILogger<UserController> logger, ITokenService tokenService)
         {
             _userService = userService;
             _logger = logger;
+            _tokenService = tokenService;
         }
         /// <summary>
         /// Get all registered users
@@ -158,6 +160,30 @@ namespace UserService.Controllers
                 _logger.LogError($"Internal server error occured while updating password. Exception is {ex}");
                 return StatusCode(500, $"{ex.Message}");
             }
+        }
+
+        [HttpPost]
+        [Route("/api/v1.0/tweets/users/verifytoken")]
+        public async Task<IActionResult> VerifyToken([FromBody] Token token)
+        {
+            var res = await _tokenService.VerifyTokenAsync(token.TokenString);
+            return Ok(res);
+        }
+
+        [HttpPost]
+        [Route("/api/v1.0/tweets/users/GetUserInfo/")]
+        public async Task<IActionResult> GetUserInfo([FromBody] Token token)
+        {
+            var user = await _tokenService.GetUserInfoFromTokenAsync(token.TokenString);
+            return Ok(user);
+        }
+
+        [HttpPost]
+        [Route("/api/v1.0/tweets/users/refreshtoken/")]
+        public async Task<IActionResult> RefreshToken([FromBody] Token token)
+        {
+            var newToken = await _tokenService.RefreshTokenAsync(token.TokenString);
+            return Ok(newToken);
         }
         #endregion
     }

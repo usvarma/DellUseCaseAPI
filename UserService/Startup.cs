@@ -34,6 +34,7 @@ namespace UserService
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<UserDbContext>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserService", Version = "v1" });

@@ -30,7 +30,7 @@ namespace UserService.Repository
                 throw new ArgumentException($"Username to search should not be null or empty. Provided username is: {userName}");
             }
 
-            return await _userDbcontext.Users.Find(user => user.EmailAddress != null && user.EmailAddress.Contains(userName)).ToListAsync();
+            return await _userDbcontext.Users.Find(user => user.Username != null && user.Username.Contains(userName)).ToListAsync();
         }
 
         #region Authentication
@@ -58,10 +58,10 @@ namespace UserService.Repository
                 throw new ArgumentException($"Invalid argument to register user: {user}");
             }
 
-            var isUserAlreadyRegistered = GetUserList(user.EmailAddress).Any();
+            var isUserAlreadyRegistered = GetUserList(user.Username).Any();
             if (isUserAlreadyRegistered)
             {
-                throw new ArgumentException($"User is already registered with email address: {user.EmailAddress}");
+                throw new ArgumentException($"User is already registered with username: {user.Username}");
             }
 
             var userList = _userDbcontext.Users.AsQueryable().ToList();
@@ -94,16 +94,17 @@ namespace UserService.Repository
             }
 
             userList.FirstOrDefault().PasswordHashed = ComputeHash(updatedPassword);
-            await _userDbcontext.Users.ReplaceOneAsync(user => user.EmailAddress == userName, userList.FirstOrDefault());
+            await _userDbcontext.Users.ReplaceOneAsync(user => user.Username == userName, userList.FirstOrDefault());
         }
+
+        #endregion
 
         #region Private Methods
         private IEnumerable<User> GetUserList(string userName)
         {
-            return _userDbcontext.Users.Find(user => user.EmailAddress == userName).ToList();
+            return _userDbcontext.Users.Find(user => user.Username == userName).ToList();
         }
-
-        private HashedPassword ComputeHash(string password)
+        private static HashedPassword ComputeHash(string password)
         {
             var hashAlgo = SHA512.Create();
             if (string.IsNullOrWhiteSpace(password))
@@ -115,12 +116,11 @@ namespace UserService.Repository
             var passwordWithSalt = new List<byte>();
             passwordWithSalt.AddRange(passwordBytes);
             passwordWithSalt.AddRange(saltBytes);
-                        
+
             var hashedPassword = hashAlgo.ComputeHash(passwordWithSalt.ToArray());
-            
+
             return new HashedPassword(Convert.ToBase64String(hashedPassword), Convert.ToBase64String(saltBytes));
         }
-
         private static byte[] GenerateSalt(int keysize)
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
@@ -128,11 +128,10 @@ namespace UserService.Repository
             rng.GetNonZeroBytes(saltBytes);
             return saltBytes;
         }
-
-        private bool VerifyPassword(User user, string password)
+        private static bool VerifyPassword(User user, string password)
         {
             var hashAlgo = SHA512.Create();
-            
+
             if (string.IsNullOrWhiteSpace(password) || user == null)
             {
                 return false;
@@ -148,8 +147,6 @@ namespace UserService.Repository
 
             return hashedPassword == user.PasswordHashed.PasswordHashed;
         }
-
-        #endregion
 
         #endregion
     }

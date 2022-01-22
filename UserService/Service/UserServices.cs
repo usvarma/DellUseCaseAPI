@@ -18,9 +18,9 @@ namespace UserService.Service
             return await _userRepository.GetAllUsersAsync();
         }
 
-        public async Task<IEnumerable<User>> SearchUserAsync(string userName)
+        public async Task<IEnumerable<User>> SearchUserAsync(string username)
         {
-            return await _userRepository.SearchUserAsync(userName);
+            return await _userRepository.SearchUserAsync(username);
         }
 
         #region Authentication

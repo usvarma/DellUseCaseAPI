@@ -6,10 +6,10 @@ namespace UserService.Models
         public string PasswordHashed { get; set; }
         public string SaltUnhashed { get; set; }
 
-        public HashedPassword(string passwordHashed, string saltHashed)
+        public HashedPassword(string passwordHashed, string saltUnhashed)
         {
             PasswordHashed = passwordHashed;
-            SaltUnhashed = saltHashed;
+            SaltUnhashed = saltUnhashed;
         }
     }
 }
