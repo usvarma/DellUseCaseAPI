@@ -49,6 +49,11 @@ namespace TweetService.Controllers
         [HttpGet("api/v1.0/[controller]/{username}")]
         public async Task<IActionResult> GetAllTweetsOfUserAsync([FromRoute]string username)
         {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return BadRequest("Username cannot be null or empty");
+            }
+
             try
             {
                 var tweetsOfUser = await _tweetService.GetAllTweetsOfUserAsync(username);
@@ -71,6 +76,10 @@ namespace TweetService.Controllers
         [HttpPost("api/v1.0/[controller]/{username}/add")]
         public async Task<IActionResult> AddTweetAsync([FromBody] Tweet tweet, [FromRoute] string username)
         {
+            if(tweet == null || string.IsNullOrWhiteSpace(username))
+            {
+                return BadRequest($"Invalid arguments for add tweet. Tweet: {tweet} and username: {username}");
+            }
             try
             {
                 var newTweet = await _tweetService.AddTweetAsync(tweet, username);

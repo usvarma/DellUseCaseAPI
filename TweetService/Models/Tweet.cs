@@ -14,7 +14,6 @@ namespace TweetService.Models
         [MaxLength(144)]
         public string Message { get; set; }
         [Required]
-        [EmailAddress]
         public string Username { get; set; }
         public IEnumerable<String> LikedByUsers { get; set; }
         public IEnumerable<String> RepliedByUsers { get; set; }
