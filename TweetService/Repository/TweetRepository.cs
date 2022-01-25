@@ -76,6 +76,13 @@ namespace TweetService.Repository
             }
 
             var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == tweetId).ToList();
+            var likedUser = _tweetDbContext.Users.Find(user => user.Username == username);
+
+            if (!likedUser.Any())
+            {
+                throw new ArgumentException($"Cannot find user with username: {username} when liking tweets");
+            }
+
             if (!tweetToUpdate.Any())
             {
                 throw new ArgumentException($"Cannot find tweet with id: {tweetId} to like");
@@ -96,7 +103,14 @@ namespace TweetService.Repository
             {
                 throw new ArgumentException($"Invalid arguments to update tweet. Tweet id: {tweetId}, username: {userName} and updated tweet value: {updatedTweet}");
             }
-            
+
+            var updatedByUser = _tweetDbContext.Users.Find(user => user.Username == userName);
+
+            if (!updatedByUser.Any())
+            {
+                throw new ArgumentException($"Cannot find user with username: {userName} when updating a tweet");
+            }
+
             var tweetToUpdate = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == tweetId).ToList();
             if (!tweetToUpdate.Any())
             {
@@ -109,6 +123,13 @@ namespace TweetService.Repository
             if (parentTweetId == null || string.IsNullOrWhiteSpace(repliedByUsername) || replyTweet == null)
             {
                 throw new ArgumentException($"Invalid arguments while replying a tweet. Parent tweet id: {parentTweetId}, replying user: {repliedByUsername} and replied tweet {replyTweet}");
+            }
+
+            var repliedByUser = _tweetDbContext.Users.Find(user => user.Username == repliedByUsername);
+
+            if (!repliedByUser.Any())
+            {
+                throw new ArgumentException($"Cannot find user with username: {repliedByUsername} when replying to a tweet");
             }
 
             var tweetToReply = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == parentTweetId).ToList();

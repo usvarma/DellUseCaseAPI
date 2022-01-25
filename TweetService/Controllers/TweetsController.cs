@@ -101,6 +101,11 @@ namespace TweetService.Controllers
         [HttpPut("api/v1.0/[controller]/{username}/update/{id}")]
         public async Task<IActionResult> UpdateTweetAsync([FromRoute] int? id, [FromRoute] string username, [FromBody]Tweet newTweet)
         {
+            if(newTweet == null || id == null || string.IsNullOrWhiteSpace(username))
+            {
+                return BadRequest("Invalid arguments for updating a tweet");
+            }
+
             try
             {
                 await _tweetService.UpdateTweetAsync(id,username, newTweet);
@@ -126,6 +131,11 @@ namespace TweetService.Controllers
         [HttpDelete("api/v1.0/[controller]/{username}/delete/{id}")]
         public async Task<IActionResult> DeleteTweetAsync([FromRoute] int? id)
         {
+            if(id == null)
+            {
+                return BadRequest("Tweet Id cannot be null");
+            }
+
             try
             {
                 await _tweetService.DeleteTweetAsync(id);
@@ -152,6 +162,10 @@ namespace TweetService.Controllers
         [HttpPut("api/v1.0/[controller]/{username}/like/{id}")]
         public async Task<IActionResult> LikeTweetAsync([FromRoute] int? id, [FromRoute] string likedByUsername)
         {
+            if(id == null || string.IsNullOrWhiteSpace(likedByUsername))
+            {
+                return BadRequest("Invalid parameters to like a tweet");
+            }
             try
             {
                 await _tweetService.LikeTweetAsync(id, likedByUsername);
@@ -176,8 +190,13 @@ namespace TweetService.Controllers
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPost("api/v1.0/[controller]/{username}/reply/{id}")]
-        public async Task<IActionResult> ReplyTweetAsync([FromRoute] int id, [FromRoute] string username, [FromBody] Tweet replyTweet)
+        public async Task<IActionResult> ReplyTweetAsync([FromRoute] int? id, [FromRoute] string username, [FromBody] Tweet replyTweet)
         {
+            if(id == null || replyTweet == null || string.IsNullOrWhiteSpace(username))
+            {
+                return BadRequest("Invalid parameters to reply for a tweet");
+            }
+
             try
             {
                 await _tweetService.ReplyTweetAsync(id, username, replyTweet);
