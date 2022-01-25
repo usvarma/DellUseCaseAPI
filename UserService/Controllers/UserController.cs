@@ -49,11 +49,11 @@ namespace UserService.Controllers
         // Search for an username
         [HttpGet]
         [Route("/api/v1.0/tweets/users/search/{username}/")]
-        public IActionResult SearchUser([FromRoute] string username)
+        public async Task<IActionResult> SearchUserAsync([FromRoute] string username)
         {
             try
             {
-                var userList = _userService.SearchUserAsync(username);
+                var userList = await _userService.SearchUserAsync(username);
                 return Ok(userList);
             }
             catch (ArgumentException argEx)
