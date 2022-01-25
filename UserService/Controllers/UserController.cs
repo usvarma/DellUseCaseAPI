@@ -82,14 +82,7 @@ namespace UserService.Controllers
             try
             {
                 var registeredUser = await _userService.RegisterUserAsync(user);
-                if (registeredUser != null)
-                {
-                    return Created("", registeredUser);
-                }
-                else
-                {
-                    return BadRequest("Username already exists");
-                }
+                return Created("", registeredUser);
             }
             catch (ArgumentException argEx)
             {

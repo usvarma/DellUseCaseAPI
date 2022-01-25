@@ -213,5 +213,41 @@ namespace Tests.ControllerTests
             Assert.True(response.StatusCode == 500);
         }
         #endregion
+
+        #region ForgotPasswordAsync
+
+        [Fact]
+        public void VerifyForgotPasswordAsyncTestForValidUser()
+        {
+            var password = new UpdatePassword { Password = "******" };
+            var username = "Test";
+            userService.Setup(x => x.ForgotPasswordAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new OkObjectResult("")));
+            var res = UserController.ForgotPasswordAsync(username, password).Result;
+            var response = res as ObjectResult;
+            Assert.True(response.StatusCode == 200);
+        }
+
+        [Fact]
+        public void VerifyForgotPasswordAsyncTestForNonExistingUser()
+        {
+            var password = new UpdatePassword { Password = "******" };
+            var username = "Test";
+            userService.Setup(x => x.ForgotPasswordAsync(It.IsAny<string>(), It.IsAny<string>())).Throws(new ArgumentException("User not found"));
+            var res = UserController.ForgotPasswordAsync(username, password).Result;
+            var response = res as ObjectResult;
+            Assert.True(response.StatusCode == 400);
+        }
+
+        [Fact]
+        public void VerifyForgotPasswordAsyncTestForException()
+        {
+            var password = new UpdatePassword { Password = "******" };
+            var username = "Test";
+            userService.Setup(x => x.ForgotPasswordAsync(It.IsAny<string>(), It.IsAny<string>())).Throws(new Exception("An error occured"));
+            var res = UserController.ForgotPasswordAsync(username, password).Result;
+            var response = res as ObjectResult;
+            Assert.True(response.StatusCode == 500);
+        }
+        #endregion
     }
 }
