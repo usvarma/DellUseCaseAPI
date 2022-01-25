@@ -76,6 +76,8 @@ namespace UserService.Repository
             
             user.CreatedOn = DateTime.Now;
             user.PasswordHashed = ComputeHash(user.Password);
+            user.Password = null;
+            user.AvatarUrl = string.Empty;
             await _userDbcontext.Users.InsertOneAsync(user);
             return user;
         }
