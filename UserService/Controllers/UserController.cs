@@ -114,12 +114,13 @@ namespace UserService.Controllers
             try
             {
                 var user = await _userService.LoginUserAsync(userdata.Username, userdata.Password);
-                if(user == null)
+                if(string.IsNullOrWhiteSpace(user.Username))
                 {
                     return Unauthorized($"User {userdata.Username} is not a valid user");
                 }
 
-                return Ok();
+                var token = await _tokenService.CreateTokenAsync(user.Username, user.EmailAddress, user.Name, user.AvatarUrl);
+                return await Task.FromResult(Ok(token));
             }
             catch (ArgumentException argEx)
             {

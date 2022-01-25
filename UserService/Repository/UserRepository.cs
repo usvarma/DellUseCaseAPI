@@ -48,7 +48,7 @@ namespace UserService.Repository
                 throw new ArgumentException($"No user with username {username} found");
             }
 
-            return VerifyPassword(user.FirstOrDefault(), password) ? user.FirstOrDefault() : null;
+            return VerifyPassword(user.FirstOrDefault(), password) ? user.FirstOrDefault() : new User();
         }
 
         public async Task<User> RegisterUserAsync(User user)
