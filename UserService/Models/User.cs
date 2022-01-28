@@ -8,10 +8,6 @@ namespace UserService.Models
 {
     public class User
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.String)]
-        [JsonIgnore]
-        public int? UserId { get; set; }
         [Required]
         public string Name { get; set; }
         [EmailAddress]

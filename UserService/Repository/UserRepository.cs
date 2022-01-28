@@ -70,17 +70,7 @@ namespace UserService.Repository
             {
                 throw new ArgumentException($"Username is already registered: {user.Username}");
             }
-
-            var userList = _userDbcontext.Users.AsQueryable().ToList();
-            if (userList.Any())
-            {
-                user.UserId = userList.Max(u => u.UserId) + 1;
-            }
-            else
-            {
-                user.UserId = 1;
-            }
-            
+                                   
             user.CreatedOn = DateTime.Now;
             user.PasswordHashed = ComputeHash(user.Password);
             user.Password = null;
