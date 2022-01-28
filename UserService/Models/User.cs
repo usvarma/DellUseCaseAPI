@@ -19,6 +19,7 @@ namespace UserService.Models
         public string EmailAddress { get; set; }
         [Required]
         public string Username { get; set; }
+        [Required]
         public string Password { get; set; }
         [Url]
         public string AvatarUrl { get; set; }

@@ -58,10 +58,17 @@ namespace UserService.Repository
                 throw new ArgumentException($"Invalid argument to register user: {user}");
             }
 
-            var isUserAlreadyRegistered = GetUserList(user.Username).Any();
+            var isUsernameAlreadyRegistered = GetUserList(user.Username).Any();
+            var isUserAlreadyRegistered = GetUserByEmail(user.EmailAddress).Any();
+            
             if (isUserAlreadyRegistered)
             {
-                throw new ArgumentException($"User is already registered with username: {user.Username}");
+                throw new ArgumentException($"User is already registered with the email address: {user.EmailAddress}");
+            }
+
+            if (isUsernameAlreadyRegistered)
+            {
+                throw new ArgumentException($"Username is already registered: {user.Username}");
             }
 
             var userList = _userDbcontext.Users.AsQueryable().ToList();
@@ -105,6 +112,10 @@ namespace UserService.Repository
         private IEnumerable<User> GetUserList(string userName)
         {
             return _userDbcontext.Users.Find(user => user.Username == userName).ToList();
+        }
+        private IEnumerable<User> GetUserByEmail(string emailAddress)
+        {
+            return _userDbcontext.Users.Find(user => user.EmailAddress == emailAddress).ToList();
         }
         private static HashedPassword ComputeHash(string password)
         {
