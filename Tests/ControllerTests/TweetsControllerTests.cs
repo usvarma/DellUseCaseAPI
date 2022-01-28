@@ -64,7 +64,7 @@ namespace Tests.ControllerTests
             var res = TweetController.GetAllTweetsAsync().Result;
             var response = res as ObjectResult;
             Assert.True(response.StatusCode == 500);
-            
+
         }
         #endregion
 
@@ -136,7 +136,7 @@ namespace Tests.ControllerTests
 
         [Theory]
         [InlineData(null, "test")]
-        
+
         public void VerifyAddTweetsAsyncTestForNullTweet(Tweet tweet, string username)
         {
             var res = TweetController.AddTweetAsync(tweet, username).Result;
@@ -198,7 +198,7 @@ namespace Tests.ControllerTests
         public void VerifyAddTweetsAsyncTestForInvalidIdAndUsername(int? id, string username)
         {
             var newtweet = new Tweet { Message = "Test message", Username = "Test User", PostedOn = DateTime.Now };
-            var res = TweetController.UpdateTweetAsync(id,username, newtweet).Result;
+            var res = TweetController.UpdateTweetAsync(id, username, newtweet).Result;
             var response = res as ObjectResult;
             Assert.True(response.StatusCode == 400);
         }
@@ -219,17 +219,21 @@ namespace Tests.ControllerTests
         [Fact]
         public void VerifyDeleteTweetAsyncTestWhenIdIsValid()
         {
-            tweetService.Setup(x => x.DeleteTweetAsync(It.IsAny<int>())).Returns(Task.FromResult(new OkObjectResult("")));
+            tweetService.Setup(x => x.DeleteTweetAsync(It.IsAny<int>(), It.IsAny<string>())).Returns(Task.FromResult(new OkObjectResult("")));
 
-            var res = TweetController.DeleteTweetAsync(1).Result;
+            var res = TweetController.DeleteTweetAsync(1, "test").Result;
             var response = res as ObjectResult;
             Assert.True(response.StatusCode == 200);
         }
 
-        [Fact]
-        public void VerifyDeleteTweetAsyncTestForNullId()
+        [Theory]
+        [InlineData(null, "test")]
+        [InlineData(1, "          ")]
+        [InlineData(1, "")]
+        [InlineData(1, null)]
+        public void VerifyDeleteTweetAsyncTestForInvalidParams(int? id, string username)
         {
-            var res = TweetController.DeleteTweetAsync(null).Result;
+            var res = TweetController.DeleteTweetAsync(id, username).Result;
             var response = res as ObjectResult;
             Assert.True(response.StatusCode == 400);
         }
@@ -237,9 +241,9 @@ namespace Tests.ControllerTests
         [Fact]
         public void VerifyDeleteTweetAsyncTestForNonExistingId()
         {
-            tweetService.Setup(x => x.DeleteTweetAsync(It.IsAny<int>())).Throws(new ArgumentException("Invalid tweet id"));
+            tweetService.Setup(x => x.DeleteTweetAsync(It.IsAny<int>(), It.IsAny<string>())).Throws(new ArgumentException("Invalid tweet id"));
 
-            var res = TweetController.DeleteTweetAsync(100).Result;
+            var res = TweetController.DeleteTweetAsync(100, "test").Result;
             var response = res as ObjectResult;
             Assert.True(response.StatusCode == 400);
         }
@@ -247,9 +251,9 @@ namespace Tests.ControllerTests
         [Fact]
         public void VerifyDeleteTweetAsyncTestWhenExceptionIsThrown()
         {
-            tweetService.Setup(x => x.DeleteTweetAsync(It.IsAny<int>())).Throws(new Exception("An error occured"));
+            tweetService.Setup(x => x.DeleteTweetAsync(It.IsAny<int>(), It.IsAny<string>())).Throws(new Exception("An error occured"));
 
-            var res = TweetController.DeleteTweetAsync(100).Result;
+            var res = TweetController.DeleteTweetAsync(100, "test").Result;
             var response = res as ObjectResult;
             Assert.True(response.StatusCode == 500);
         }
@@ -266,7 +270,7 @@ namespace Tests.ControllerTests
             var response = res as ObjectResult;
             Assert.True(response.StatusCode == 200);
         }
-        
+
         [Theory]
         [InlineData(null, "test")]
         [InlineData(1, "          ")]
