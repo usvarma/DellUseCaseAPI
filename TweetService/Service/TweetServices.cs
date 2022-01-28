@@ -20,9 +20,9 @@ namespace TweetService.Service
             var addResult = await _tweetRepository.AddTweetAsync(tweet, userName);
             return addResult;
         }
-        public async Task DeleteTweetAsync(int? tweetId)
+        public async Task DeleteTweetAsync(int? tweetId, string username)
         {
-            await _tweetRepository.DeleteTweetAsync(tweetId);
+            await _tweetRepository.DeleteTweetAsync(tweetId, username);
         }
         public async Task<IEnumerable<Tweet>> GetAllTweetsAsync()
         {

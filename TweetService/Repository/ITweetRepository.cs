@@ -10,7 +10,7 @@ namespace TweetService.Repository
         Task<IEnumerable<Tweet>> GetAllTweetsOfUserAsync(string userName);
         Task<Tweet> AddTweetAsync(Tweet tweet, string userName);
         Task UpdateTweetAsync(int? tweetId, string userName, Tweet updatedTweet);
-        Task DeleteTweetAsync(int? tweetId);
+        Task DeleteTweetAsync(int? tweetId, string username);
         Task LikeTweetAsync(int? tweetId, string username);
         Task ReplyTweetAsync(int? parentTweetId, string repliedByUsername, Tweet replyTweet);
     }

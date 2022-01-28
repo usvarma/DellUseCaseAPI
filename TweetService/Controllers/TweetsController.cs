@@ -129,16 +129,16 @@ namespace TweetService.Controllers
         /// </summary>
         /// <param name="id"></param>
         [HttpDelete("api/v1.0/[controller]/{username}/delete/{id}")]
-        public async Task<IActionResult> DeleteTweetAsync([FromRoute] int? id)
+        public async Task<IActionResult> DeleteTweetAsync([FromRoute] int? id, [FromRoute]string username)
         {
-            if(id == null)
+            if(id == null || string.IsNullOrWhiteSpace(username))
             {
-                return BadRequest("Tweet Id cannot be null");
+                return BadRequest($"Invalid parameters for deleting a tweet. Tweet id: {id} and username: {username}");
             }
 
             try
             {
-                await _tweetService.DeleteTweetAsync(id);
+                await _tweetService.DeleteTweetAsync(id, username);
                 _logger.LogInformation($"Deleted tweet with id: {id} successfully");
                 return Ok($"Deleted tweet with id: {id} successfully");
             } 

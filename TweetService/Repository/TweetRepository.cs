@@ -44,20 +44,21 @@ namespace TweetService.Repository
             await _tweetDbContext.Tweets.InsertOneAsync(tweet);
             return tweet;
         }
-        public async Task DeleteTweetAsync(int? tweetId)
+        public async Task DeleteTweetAsync(int? tweetId, string username)
         {
-            if (tweetId == null)
+            if (tweetId == null || string.IsNullOrWhiteSpace(username))
             {
-                throw new ArgumentException($"Invalid tweet id: {tweetId}");
+                throw new ArgumentException($"Invalid parameters for deleting a tweet. Tweet id: {tweetId} and username: {username}");
             }
             else
             {
                 var tweetList = _tweetDbContext.Tweets.Find(tweet => tweet.TweetId == tweetId).ToList();
+
                 if (!tweetList.Any())
                 {
                     throw new ArgumentException($"Cannot find tweet with id: {tweetId} to delete");
                 }
-                await _tweetDbContext.Tweets.FindOneAndDeleteAsync(tweet => tweet.TweetId == tweetId);
+                await _tweetDbContext.Tweets.FindOneAndDeleteAsync(tweet => tweet.TweetId == tweetId && tweet.Username == username);
             }
         }
         public async Task<IEnumerable<Tweet>> GetAllTweetsAsync()
