@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TweetService</name>
+    </assembly>
+    <members>
+        <member name="M:TweetService.Controllers.TweetsController.GetAllTweetsAsync">
+            <summary>
+            Get all tweets for all users
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TweetService.Controllers.TweetsController.GetAllTweetsOfUserAsync(System.String)">
+            <summary>
+            Get all tweets for an user using username
+            </summary>
+            <param name="userName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TweetService.Controllers.TweetsController.AddTweetAsync(TweetService.Models.Tweet,System.String)">
+            <summary>
+            Add a tweet for an user
+            </summary>
+            <param name="tweet"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TweetService.Controllers.TweetsController.UpdateTweetAsync(System.Nullable{System.Int32},System.String,TweetService.Models.Tweet)">
+            <summary>
+            Update a users tweet using tweet id
+            </summary>
+            <param name="id"></param>
+            <param name="userName"></param>        
+        </member>
+        <member name="M:TweetService.Controllers.TweetsController.DeleteTweetAsync(System.Nullable{System.Int32},System.String)">
+            <summary>
+             Delete a user's tweet using tweet id
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="M:TweetService.Controllers.TweetsController.LikeTweetAsync(System.Nullable{System.Int32},System.String)">
+            <summary>
+            Like a users tweet
+            </summary>
+            <param name="id"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:TweetService.Controllers.TweetsController.ReplyTweetAsync(System.Nullable{System.Int32},System.String,TweetService.Models.Tweet)">
+            <summary>
+            Reply to a tweet from an user
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

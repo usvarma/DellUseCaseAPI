@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace TweetService.Controllers
 {
     [Route("")]
     [ApiController]
+    [Authorize]
     public class TweetsController : ControllerBase
     {
         private readonly ILogger<TweetsController> _logger;

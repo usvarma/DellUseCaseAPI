@@ -169,7 +169,7 @@ namespace UserService.Controllers
         }
 
         [HttpPost]
-        [Route("/api/v1.0/tweets/users/GetUserInfo/")]
+        [Route("/api/v1.0/tweets/users/GetUserInfo")]
         public async Task<IActionResult> GetUserInfo([FromBody] Token token)
         {
             var user = await _tokenService.GetUserInfoFromTokenAsync(token.TokenString);
@@ -177,7 +177,7 @@ namespace UserService.Controllers
         }
 
         [HttpPost]
-        [Route("/api/v1.0/tweets/users/refreshtoken/")]
+        [Route("/api/v1.0/tweets/users/refreshtoken")]
         public async Task<IActionResult> RefreshToken([FromBody] Token token)
         {
             var newToken = await _tokenService.RefreshTokenAsync(token.TokenString);

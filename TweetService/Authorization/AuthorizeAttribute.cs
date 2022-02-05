@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using UserService.Models;
 
-namespace UserService.Authorization
+namespace TweetService.Authorization
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
