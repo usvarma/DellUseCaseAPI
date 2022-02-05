@@ -18,7 +18,8 @@ namespace UserService.Service
         public TokenService(IConfiguration configuration)
         {
             tokenHandler = new JwtSecurityTokenHandler();
-            secretKey = Encoding.ASCII.GetBytes(configuration.GetValue<string>("JwtSecretKey"));
+            //secretKey = Encoding.ASCII.GetBytes(configuration.GetValue<string>("JwtSecretKey"));
+            secretKey = Encoding.ASCII.GetBytes(configuration.GetValue<string>("Jwt:Key"));
         }
         public Task<string> CreateTokenAsync(string userName, string emailId, string name, string image)
         {
@@ -98,7 +99,7 @@ namespace UserService.Service
             try
             {
                 tokenHandler.ValidateToken(
-                token.Replace("\"", string.Empty),
+                token,
                 new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,

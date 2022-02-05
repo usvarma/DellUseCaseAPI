@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UserService</name>
+    </assembly>
+    <members>
+        <member name="M:UserService.Controllers.UserController.GetAllUsersAsync">
+            <summary>
+            Get all registered users
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UserService.Controllers.UserController.SearchUserAsync(System.String)">
+            <summary>
+            Search for an user using username. Can search for full or partial match(Wildcard search).
+            </summary>
+            <param name="username"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UserService.Controllers.UserController.RegisterUserAsync(UserService.Models.User)">
+            <summary>
+            Register an user
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UserService.Controllers.UserController.LoginUserAsync(UserService.Models.UserCredential)">
+            <summary>
+            User login
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UserService.Controllers.UserController.ForgotPasswordAsync(System.String,UserService.Models.UpdatePassword)">
+            <summary>
+            Forgot password
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

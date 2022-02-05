@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace UserService.Controllers
 {
     [Route("")]
     [ApiController]
+
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
@@ -25,6 +27,7 @@ namespace UserService.Controllers
         /// </summary>
         /// <returns></returns>
 
+        [Authorize]
         [HttpGet]
         [Route("/api/v1.0/tweets/users/all")]
         public async Task<IActionResult> GetAllUsersAsync()
@@ -44,10 +47,11 @@ namespace UserService.Controllers
         /// <summary>
         /// Search for an user using username. Can search for full or partial match(Wildcard search).
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="username"></param>
         /// <returns></returns>
         // Search for an username
         [HttpGet]
+        [Authorize]
         [Route("/api/v1.0/tweets/users/search/{username}/")]
         public async Task<IActionResult> SearchUserAsync([FromRoute] string username)
         {
@@ -73,7 +77,7 @@ namespace UserService.Controllers
         /// <summary>
         /// Register an user
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("/api/v1.0/tweets/register")]
@@ -89,7 +93,7 @@ namespace UserService.Controllers
                 _logger.LogError($"Could not register user due to exception. Exception is {argEx}");
                 return StatusCode(400, $"{argEx.Message}");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError($"Internal server error occured while registering user. Exception is {ex}");
                 return StatusCode(500, $"{ex.Message}");
@@ -107,7 +111,7 @@ namespace UserService.Controllers
             try
             {
                 var user = await _userService.LoginUserAsync(userdata.Username, userdata.Password);
-                if(string.IsNullOrWhiteSpace(user.Username))
+                if (string.IsNullOrWhiteSpace(user.Username))
                 {
                     return Unauthorized($"User {userdata.Username} is not a valid user");
                 }
@@ -133,11 +137,11 @@ namespace UserService.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("/api/v1.0/tweets/{username}/forgot")]
-        public async Task<IActionResult> ForgotPasswordAsync([FromRoute]string username, [FromBody] UpdatePassword password)
+        public async Task<IActionResult> ForgotPasswordAsync([FromRoute] string username, [FromBody] UpdatePassword password)
         {
             try
             {
-                if(string.IsNullOrWhiteSpace(username) || password == null)
+                if (string.IsNullOrWhiteSpace(username) || password == null)
                 {
                     return BadRequest($"Username or password should not be null");
                 }
