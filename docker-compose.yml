@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  tweetservice:
+    image: ${DOCKER_REGISTRY-}tweetservice
+    build:
+      context: .
+      dockerfile: TweetService\Dockerfile
+
+  userservice:
+    image: ${DOCKER_REGISTRY-}userservice
+    build:
+      context: .
+      dockerfile: UserService\Dockerfile
+
