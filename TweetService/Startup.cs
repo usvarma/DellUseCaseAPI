@@ -15,6 +15,9 @@ using TweetService.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using UserService.Service;
+using UserService.Repository;
+using UserService.UserDBContext;
 
 namespace TweetService
 {
@@ -32,7 +35,11 @@ namespace TweetService
         {
             services.AddControllers();
             services.AddScoped<ITweetServices, TweetServices>();
+            services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITweetRepository, TweetRepository>();
+            services.AddScoped<UserDbContext>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<TweetDbContext>();
             services.AddSwaggerGen(options =>
             {
@@ -79,7 +86,7 @@ namespace TweetService
                 
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

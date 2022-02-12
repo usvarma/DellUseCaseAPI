@@ -1,15 +1,24 @@
 version: '3.4'
 
 services:
-  tweetservice:
-    image: ${DOCKER_REGISTRY-}tweetservice
-    build:
-      context: .
-      dockerfile: TweetService\Dockerfile
+ datastore:
+    image: mongo
+    ports:
+      - "27017:27017" 
 
-  userservice:
+ userservice:
     image: ${DOCKER_REGISTRY-}userservice
     build:
       context: .
       dockerfile: UserService\Dockerfile
+    depends_on:
+      - datastore
 
+ tweetservice:
+    image: ${DOCKER_REGISTRY-}tweetservice
+    build:
+      context: .
+      dockerfile: TweetService\Dockerfile
+    depends_on:
+      - datastore
+      

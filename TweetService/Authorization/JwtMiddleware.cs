@@ -22,8 +22,8 @@ namespace TweetService.Authorization
         public async Task Invoke(HttpContext context)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            //var baseUrl = new Uri("https://localhost:44358");
-            var verifyTokenUrl = new Uri("https://localhost:44358/api/v1.0/tweets/users/verifytoken");
+            //var baseUrl = new Uri("https://userservice:44358");
+            var verifyTokenUrl = new Uri("http://userservice/api/v1.0/tweets/users/verifytoken");
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -33,7 +33,7 @@ namespace TweetService.Authorization
             //var userId = await tokenService.VerifyTokenAsync(token);
             if (userExists)
             {
-                var getUserInfoUrl = new Uri("https://localhost:44358/api/v1.0/tweets/users/GetUserInfo");
+                var getUserInfoUrl = new Uri("http://userservice/api/v1.0/tweets/users/GetUserInfo");
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var getUserInfoResponse = await httpClient.PostAsJsonAsync(getUserInfoUrl, tokenObj);

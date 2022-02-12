@@ -6,6 +6,8 @@
     <ProjectGuid>9299e3da-ecfe-4804-b2f1-9cc0727536ed</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://{ServiceIPAddress}{ServicePort}/swagger/index.html</DockerServiceUrl>
+  </PropertyGroup>
+  <PropertyGroup>
     <DockerServiceName>tweetservice</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
