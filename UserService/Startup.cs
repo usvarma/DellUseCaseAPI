@@ -42,13 +42,9 @@ namespace UserService
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<UserDbContext>();
             services.AddScoped<ITokenService, TokenService>();
-
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserService", Version = "v1" });
-            //});
+            services.AddCors();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+                    .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -74,21 +70,6 @@ namespace UserService
                     Description = "JWT Authorization header using the Bearer scheme."
                 });
                 options.OperationFilter<SecureEndpointAuthRequirementFilter>();
-                //options.AddSecurityRequirement(
-                //    new OpenApiSecurityRequirement
-                //    {
-                //        {
-                //            new OpenApiSecurityScheme
-                //            {
-                //                Reference = new OpenApiReference
-                //                {
-                //                    Type = ReferenceType.SecurityScheme,
-                //                    Id = "Bearer"
-                //                }
-                //            },
-                //            Array.Empty<string>()
-                //        }
-                //    });
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "UserService", Version = "v1" });
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -107,12 +88,13 @@ namespace UserService
 
             //app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors(x => x.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<JwtMiddleware>();
-            //app.UseCors(x => x.AllowAnyOrigin()
-            //                .AllowAnyMethod()
-            //                .AllowAnyHeader());
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

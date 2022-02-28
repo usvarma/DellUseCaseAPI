@@ -41,6 +41,7 @@ namespace TweetService
             services.AddScoped<UserDbContext>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<TweetDbContext>();
+            services.AddCors();
             services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -62,7 +63,7 @@ namespace TweetService
                 options.IncludeXmlComments(xmlPath);
             });
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+                    .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -88,6 +89,9 @@ namespace TweetService
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors(x => x.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<JwtMiddleware>();
