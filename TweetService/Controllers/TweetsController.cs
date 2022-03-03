@@ -24,7 +24,7 @@ namespace TweetService.Controllers
         /// <summary>
         /// Get all tweets for all users
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of tweets for all users</returns>
         
         [HttpGet("api/v1.0/[controller]/all")]
         public async Task<IActionResult> GetAllTweetsAsync()
@@ -45,7 +45,7 @@ namespace TweetService.Controllers
         /// <summary>
         /// Get all tweets for an user using username
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="username">Username to search for tweets</param>
         /// <returns></returns>
         
         [HttpGet("api/v1.0/[controller]/{username}")]
@@ -72,9 +72,10 @@ namespace TweetService.Controllers
         /// <summary>
         /// Add a tweet for an user
         /// </summary>
-        /// <param name="tweet"></param>
+        /// <param name="tweet">Tweet to add</param>
+        /// <param name="username">Username for which to add the tweet</param>
         /// <returns></returns>
-        
+
         [HttpPost("api/v1.0/[controller]/{username}/add")]
         public async Task<IActionResult> AddTweetAsync([FromBody] Tweet tweet, [FromRoute] string username)
         {
@@ -98,8 +99,9 @@ namespace TweetService.Controllers
         /// <summary>
         /// Update a users tweet using tweet id
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="userName"></param>        
+        /// <param name="id">Id of the tweet to update</param>
+        /// <param name="username">Username of the user to which the tweet belongs to</param>
+        /// /// <param name="newTweet">Updated contents for new tweet</param>  
         [HttpPut("api/v1.0/[controller]/{username}/update/{id}")]
         public async Task<IActionResult> UpdateTweetAsync([FromRoute] int? id, [FromRoute] string username, [FromBody]Tweet newTweet)
         {
@@ -129,7 +131,8 @@ namespace TweetService.Controllers
         /// <summary>
         ///  Delete a user's tweet using tweet id
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Id of the tweet to delete</param>
+        /// <param name="username">Username to which the tweet belongs to</param>
         [HttpDelete("api/v1.0/[controller]/{username}/delete/{id}")]
         public async Task<IActionResult> DeleteTweetAsync([FromRoute] int? id, [FromRoute]string username)
         {
@@ -159,8 +162,8 @@ namespace TweetService.Controllers
         /// <summary>
         /// Like a users tweet
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="value"></param>
+        /// <param name="id">Id of the liked tweet</param>
+        /// <param name="likedByUsername">Username of the user who liked the tweet</param>
         [HttpPut("api/v1.0/[controller]/{username}/like/{id}")]
         public async Task<IActionResult> LikeTweetAsync([FromRoute] int? id, [FromRoute] string likedByUsername)
         {
@@ -189,7 +192,9 @@ namespace TweetService.Controllers
         /// <summary>
         /// Reply to a tweet from an user
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="id">Id of the tweet to reply to</param>
+        /// <param name="username">User who replied to the tweet</param>
+        /// <param name="replyTweet">Tweeted reply</param>
         /// <returns></returns>
         [HttpPost("api/v1.0/[controller]/{username}/reply/{id}")]
         public async Task<IActionResult> ReplyTweetAsync([FromRoute] int? id, [FromRoute] string username, [FromBody] Tweet replyTweet)

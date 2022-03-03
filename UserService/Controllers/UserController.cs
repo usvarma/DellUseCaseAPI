@@ -122,7 +122,7 @@ namespace UserService.Controllers
             catch (ArgumentException argEx)
             {
                 _logger.LogError($"Could not login user {userdata.Username} due to exception. Exception is {argEx}");
-                return StatusCode(400, $"{argEx.Message}");
+                return StatusCode(401, $"{argEx.Message}");
             }
             catch (Exception ex)
             {
