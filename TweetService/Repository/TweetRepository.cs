@@ -94,8 +94,21 @@ namespace TweetService.Repository
                 throw new ArgumentException($"User cannot like own tweet");
             }
 
-            var newLikedByUsers = tweetToUpdate[0].LikedByUsers.Append(username);
-            tweetToUpdate[0].LikedByUsers = newLikedByUsers;
+            //need to update this LikedByUsers list when it is null
+            if(tweetToUpdate[0].LikedByUsers != null)
+            {
+                if (tweetToUpdate[0].LikedByUsers.Contains(username))
+                {
+                    throw new ArgumentException($"User cannot like a tweet multiple times!");
+                }
+                var newLikedByUsers = tweetToUpdate[0].LikedByUsers.Append(username);
+                tweetToUpdate[0].LikedByUsers = newLikedByUsers;
+            }
+            else
+            {
+                tweetToUpdate[0].LikedByUsers = new List<string> { username };
+            }
+            
             await _tweetDbContext.Tweets.ReplaceOneAsync(tweet => tweet.TweetId == tweetId, tweetToUpdate[0]);
         }
         public async Task UpdateTweetAsync(int? tweetId, string userName, Tweet updatedTweet)

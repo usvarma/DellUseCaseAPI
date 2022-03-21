@@ -163,17 +163,17 @@ namespace TweetService.Controllers
         /// Like a users tweet
         /// </summary>
         /// <param name="id">Id of the liked tweet</param>
-        /// <param name="likedByUsername">Username of the user who liked the tweet</param>
+        /// <param name="username">Username of the user who liked the tweet</param>
         [HttpPut("api/v1.0/[controller]/{username}/like/{id}")]
-        public async Task<IActionResult> LikeTweetAsync([FromRoute] int? id, [FromRoute] string likedByUsername)
+        public async Task<IActionResult> LikeTweetAsync([FromRoute] int? id, [FromRoute] string username)
         {
-            if(id == null || string.IsNullOrWhiteSpace(likedByUsername))
+            if(id == null || string.IsNullOrWhiteSpace(username))
             {
                 return BadRequest("Invalid parameters to like a tweet");
             }
             try
             {
-                await _tweetService.LikeTweetAsync(id, likedByUsername);
+                await _tweetService.LikeTweetAsync(id, username);
                 _logger.LogInformation($"Liked tweet with id: {id} successfully");
                 return Ok($"Liked tweet with id: {id} successfully");
             }

@@ -45,7 +45,7 @@
             Like a users tweet
             </summary>
             <param name="id">Id of the liked tweet</param>
-            <param name="likedByUsername">Username of the user who liked the tweet</param>
+            <param name="username">Username of the user who liked the tweet</param>
         </member>
         <member name="M:TweetService.Controllers.TweetsController.ReplyTweetAsync(System.Nullable{System.Int32},System.String,TweetService.Models.Tweet)">
             <summary>
