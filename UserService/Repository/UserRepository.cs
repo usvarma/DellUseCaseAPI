@@ -27,7 +27,7 @@ namespace UserService.Repository
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new ArgumentException($"Username to search should not be null or empty. Provided username is: {userName}");
+                throw new ArgumentException($"Cannot find username: {userName}");
             }
 
             return await _userDbcontext.Users.Find(user => user.Username != null && user.Username.Contains(userName)).ToListAsync();
@@ -38,24 +38,24 @@ namespace UserService.Repository
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                throw new ArgumentException($"Invalid username or password. Username: {username}, Password: {password}");
+                throw new ArgumentException($"Invalid username or password. Please login with valid credentials");
             }
             
             var user = await SearchUserAsync(username);
                         
             if (!user.Any())
             {
-                throw new ArgumentException($"No user with username {username} found");
+                throw new ArgumentException($"User {username} is not registered. Please login with registered username");
             }
 
-            return VerifyPassword(user.FirstOrDefault(), password) ? user.FirstOrDefault() : new User();
+            return VerifyPassword(user.FirstOrDefault(), password) ? user.FirstOrDefault() : throw new ArgumentException($"Invalid username or password. Please login with valid credentials");
         }
 
         public async Task<User> RegisterUserAsync(User user)
         {
             if(user == null)
             {
-                throw new ArgumentException($"Invalid argument to register user: {user}");
+                throw new ArgumentException($"Cannot register user: {user}");
             }
 
             var isUsernameAlreadyRegistered = GetUserList(user.Username).Any();

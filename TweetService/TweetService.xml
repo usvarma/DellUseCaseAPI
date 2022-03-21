@@ -8,47 +8,52 @@
             <summary>
             Get all tweets for all users
             </summary>
-            <returns></returns>
+            <returns>List of tweets for all users</returns>
         </member>
         <member name="M:TweetService.Controllers.TweetsController.GetAllTweetsOfUserAsync(System.String)">
             <summary>
             Get all tweets for an user using username
             </summary>
-            <param name="userName"></param>
+            <param name="username">Username to search for tweets</param>
             <returns></returns>
         </member>
         <member name="M:TweetService.Controllers.TweetsController.AddTweetAsync(TweetService.Models.Tweet,System.String)">
             <summary>
             Add a tweet for an user
             </summary>
-            <param name="tweet"></param>
+            <param name="tweet">Tweet to add</param>
+            <param name="username">Username for which to add the tweet</param>
             <returns></returns>
         </member>
         <member name="M:TweetService.Controllers.TweetsController.UpdateTweetAsync(System.Nullable{System.Int32},System.String,TweetService.Models.Tweet)">
             <summary>
             Update a users tweet using tweet id
             </summary>
-            <param name="id"></param>
-            <param name="userName"></param>        
+            <param name="id">Id of the tweet to update</param>
+            <param name="username">Username of the user to which the tweet belongs to</param>
+            /// <param name="newTweet">Updated contents for new tweet</param>  
         </member>
         <member name="M:TweetService.Controllers.TweetsController.DeleteTweetAsync(System.Nullable{System.Int32},System.String)">
             <summary>
              Delete a user's tweet using tweet id
             </summary>
-            <param name="id"></param>
+            <param name="id">Id of the tweet to delete</param>
+            <param name="username">Username to which the tweet belongs to</param>
         </member>
         <member name="M:TweetService.Controllers.TweetsController.LikeTweetAsync(System.Nullable{System.Int32},System.String)">
             <summary>
             Like a users tweet
             </summary>
-            <param name="id"></param>
-            <param name="value"></param>
+            <param name="id">Id of the liked tweet</param>
+            <param name="likedByUsername">Username of the user who liked the tweet</param>
         </member>
         <member name="M:TweetService.Controllers.TweetsController.ReplyTweetAsync(System.Nullable{System.Int32},System.String,TweetService.Models.Tweet)">
             <summary>
             Reply to a tweet from an user
             </summary>
-            <param name="value"></param>
+            <param name="id">Id of the tweet to reply to</param>
+            <param name="username">User who replied to the tweet</param>
+            <param name="replyTweet">Tweeted reply</param>
             <returns></returns>
         </member>
     </members>
