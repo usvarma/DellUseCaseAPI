@@ -68,7 +68,7 @@ namespace UserService.Repository
 
             if (isUsernameAlreadyRegistered)
             {
-                throw new ArgumentException($"Username is already registered: {user.Username}");
+                throw new ArgumentException($"Username is already registered: {user.Username}. Please choose another username");
             }
                                    
             user.CreatedOn = DateTime.Now;
